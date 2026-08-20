@@ -1,0 +1,68 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+*.egg-info/
+
+# Test, lint, and coverage artifacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+configs/local.*
+
+# IDE and OS files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Raw/intermediate datasets
+data/raw/
+data/interim/
+data/processed/
+NLR_dataset/
+*.parquet
+*.arrow
+*.feather
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# Generated outputs and trained models
+outputs/
+models/
+checkpoints/
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.ckpt
+
+# Locally collected papers and reports
+papers/
+references/
+*.pdf
+

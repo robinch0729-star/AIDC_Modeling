@@ -1,0 +1,12 @@
+# NLR dataset analysis environment
+matplotlib==3.10.7
+pandas==2.3.3
+numpy==2.2.6
+cycler==0.12.1
+notebook==7.5.5
+pyarrow==23.0.1
+tqdm==4.67.3
+scipy==1.17.1
+
+# ML/DFL-specific packages will be added after the baseline model and
+# optimization-layer implementation are fixed.
