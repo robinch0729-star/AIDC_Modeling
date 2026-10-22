@@ -1,0 +1,26 @@
+{
+  "version": "ieee33_1266kv_screen_v1",
+  "inherits": "configs/modified_ieee33_candidate_v1.json",
+  "user_selected": {"family": "IEEE 33-bus", "nominal_voltage_kv": 12.66},
+  "retained_provisional_assumptions": {
+    "connection_bus_1based": 2,
+    "voltage_bounds_pu": [0.95, 1.05],
+    "branch_limit_ka": 0.6,
+    "head_limit_mva": 40.0,
+    "background_load_scale": 1.0,
+    "slack_voltage_pu": 1.0,
+    "facility_lagging_power_factor": 0.98
+  },
+  "frozen_storage_schedule_prefix": "constant_25_5_joint",
+  "scope": "Restore original 12.66 kV, topology, physical R/X and background P/Q. Replay frozen no-storage and existing ESS-TES schedules. Do not resize the AIDC, reinforce lines, change tap settings or reoptimize dispatch.",
+  "comparison_note": "The existing joint schedule was optimized against an exogenous 25.5 MW PCC cap, not this network. Its replay is a compatibility check, not a network-aware optimal schedule.",
+  "baseline_note": "Under the retained 0.95 lower bound the no-AIDC background may already be infeasible. Report a null hosting boundary in that event, not zero capacity. The source-case 0.9-1.1 bounds are a separately labelled diagnostic only.",
+  "reference": {
+    "title": "Pricing Strategy of Electric Vehicle Aggregators Based on Locational Marginal Price to Minimize Photovoltaic (PV) Curtailment",
+    "authors": "H. Song, G.-S. Seo and D. Won",
+    "publication": "IEEE Access 13,11232-11247,2025",
+    "doi": "10.1109/ACCESS.2025.3528626",
+    "url": "https://www.nlr.gov/docs/fy25osti/90266.pdf",
+    "use": "Section IV-A and Fig.9 show an Inha-group modified IEEE33 study at 12.66 kV. Only benchmark/voltage precedent; their PV/ESS/EV placement is NOT copied and their study does not validate our AIDC size or 600 A limit."
+  }
+}

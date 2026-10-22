@@ -7,6 +7,7 @@ notebook==7.5.5
 pyarrow==23.0.1
 tqdm==4.67.3
 scipy==1.17.1
+pytest==8.4.2
 
 # ML/DFL-specific packages will be added after the baseline model and
 # optimization-layer implementation are fixed.

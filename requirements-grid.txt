@@ -1,0 +1,6 @@
+# Separate environment: do not replace the pinned NLR analysis environment.
+# Python 3.12; versions used for distribution_connection_v1 screening.
+pandapower==3.5.6
+simbench==1.6.3
+matplotlib==3.11.2
+pytest==9.1.1

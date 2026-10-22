@@ -1,0 +1,54 @@
+{
+  "version": "pcc_tes_operating_candidate_v1",
+  "status": "literature_based_operating_candidate_not_hardware_specification",
+  "legacy_config": "configs/pcc_cooling_tes_candidate_v1.json",
+  "baseline_profiles": "outputs/pcc_cooling_tes_candidate_v1/internal_profiles.npz",
+  "baseline_columns": "outputs/pcc_cooling_tes_candidate_v1/internal_columns.json",
+  "step_s": 300,
+  "tes": {
+    "energy_capacity_mwh_th": 10.0,
+    "min_soc": 0.1,
+    "max_soc": 1.0,
+    "initial_soc": 0.5,
+    "charge_limit_mw_th": 3.0,
+    "discharge_limit_mw_th": 3.0,
+    "charge_efficiency": 0.9,
+    "discharge_efficiency": 0.9,
+    "hourly_retention_fraction": 1.0,
+    "capacity_loss_fraction_per_hour": 0.0004,
+    "pump_mw_per_mw_th": 0.01
+  },
+  "dispatch": {
+    "charge_hours_elapsed_mod24": [2.0, 6.0],
+    "discharge_hours_elapsed_mod24": [16.0, 18.0],
+    "charge_command_mw_th": 3.0,
+    "discharge_command_mw_th": 3.0,
+    "ordinary_charge_target_soc": 1.0,
+    "terminal_target_soc": 0.5,
+    "terminal_recovery_hours": 4.0,
+    "optimal_or_dso_instruction": false
+  },
+  "parameter_provenance": [
+    {"parameter": "TES energy and thermal power", "value": "10 MWh_th / 3 MW_th charge / 3 MW_th discharge", "classification": "scaled_reference_scenario", "basis": "PL30 Table I, PDF p3: 1 MWh_th / 0.3 MW_th / 0.3 MW_th, all multiplied by 10 to retain the existing 3 MW_th partial-cooling test command. This is not proportional scaling by our facility IT rating, an optimized size, or a vendor specification."},
+    {"parameter": "charge / discharge efficiencies", "value": "0.9 / 0.9", "classification": "direct_reference_case_values", "basis": "PL30 Table I p3; Eq25 p9. Thermal round-trip conversion efficiency 0.81 before standby loss and auxiliary electricity; not a universal TES efficiency."},
+    {"parameter": "minimum / initial / maximum SOC", "value": "10% / 50% / 100%", "classification": "reference_model_defaults", "basis": "REopt Lite manual Section16 printedp62/PDFp73 and pinned ColdThermalStorage implementation. These are modeling defaults, not universal operating standards."},
+    {"parameter": "standby thermal loss", "value": "0.0004 * E_capacity MW_th = 0.004 MW_th", "classification": "reference_implementation_default", "basis": "REopt.jl pinned 4227bf1755280c6febd07a8f2ac575689f611ccb ColdTESInventoryCon: loss proportional to capacity per hour. Manual Table31 loosely says stored energy; implementation resolves the basis. No additional UA or proportional-to-current-SOC loss applied."},
+    {"parameter": "terminal storage energy", "value": "E_final = E_initial = 5 MWh_th", "classification": "reference_constraint_with_scenario_value", "basis": "Cyclic comparison from PL30 Eq35; numerical initial SOC from REopt. Recovery is simulated through actual charge commands, never assigned directly."},
+    {"parameter": "TES pump electricity", "value": "0.01 MW_e per MW_th throughput", "classification": "explicit_research_assumption", "basis": "Reduced auxiliary coefficient, not cited as a measured pump specification; sensitivity at 0 and 0.02. Added electrically and as water-loop heat exactly once."},
+    {"parameter": "COP / chiller capacity", "value": "5 / 26 MW_th", "classification": "preserved_existing_candidate", "basis": "COP5 also appears in PL30 TableI and prior PL13 case; 26 MW_th is the existing hypothetical aggregate chiller capacity. COP4 and6 are sensitivity cases, not confidence bounds."},
+    {"parameter": "operating clock", "value": "5-minute energy steps; charge 2-6 h, discharge16-18 h modulo24; final4h recovery", "classification": "explicit_research_assumption", "basis": "Prior illustrative schedule retained. These are elapsed simulation hours, not local tariff periods or DSO instructions. Original PL30 uses15min; explicit dt permits changing interval without exponentiating conversion efficiencies."}
+  ],
+  "references": [
+    {"id": "PL30", "title": "Characterisation and Quantification of Data Centre Flexibility for Power System Support", "authors": "M. T. Takci, J. Day, M. Qadrdan", "version": "arXiv:2511.07159v1, 2025; preprint", "url": "https://arxiv.org/abs/2511.07159", "local_pdf": "D:/DC_modeling/outputs/literature_review_example/paper_list/[30] Characterisation and Quantification of Data Centre Flexibility for Power System Support.pdf", "used": "TableI p3; Eq25,32-36 p9. No IT workload shifting, UPS optimization, or multi-node room thermal model copied."},
+    {"id": "REOPT_MANUAL", "title": "REopt Lite User Manual", "version": "NREL/TP-7A40-79235, 2021", "url": "https://www.nlr.gov/docs/fy21osti/79235.pdf", "local_pdf": "D:/DC_modeling/tmp/pdfs/tes_operational_reference_review/reopt_lite_manual_79235.pdf", "used": "Section16 printedp62, initial/minimum SOC and nominal loss rate. Actual loss basis checked against pinned implementation."},
+    {"id": "REOPT_CODE", "title": "REopt.jl ColdThermalStorage defaults and ColdTESInventoryCon", "version": "4227bf1755280c6febd07a8f2ac575689f611ccb", "url": "https://github.com/NatLabRockies/REopt.jl/blob/4227bf1755280c6febd07a8f2ac575689f611ccb/src/core/energy_storage/thermal_storage.jl", "constraint_url": "https://github.com/NatLabRockies/REopt.jl/blob/4227bf1755280c6febd07a8f2ac575689f611ccb/src/constraints/storage_constraints.jl#L298-L303", "used": "Capacity-based hourly standing loss and SOC defaults only. REopt internal conversion efficiency is not also multiplied into PL30 efficiencies."}
+  ],
+  "scope": [
+    "Existing IT, room heat load and base cooling input are frozen. No rescaling to 20 MW.",
+    "The storage abstraction is compatible with a chilled-water energy reservoir / stratified-tank operating model, not a parameter refit of the old fully mixed temperature tank.",
+    "Tank volume, geometry, UA, water mass flow and outlet temperature are not input variables. Rated usable cooling is assumed deliverable within a suitable chilled-water operating window; outlet-temperature adequacy is not newly validated.",
+    "All checks concern 5-minute average energy operation. Frozen 10-second baseline headroom is additionally checked under 5-minute held TES commands, but not as a validation of fast control or new thermal dynamics.",
+    "Operating cost, DSO-DOE coordination, ESS dispatch, DFL and HIL are not implemented here.",
+    "Legacy temperature model and its reports remain unchanged as an auxiliary candidate, not erased or claimed validated by this reduction."
+  ]
+}

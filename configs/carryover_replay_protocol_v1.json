@@ -1,0 +1,43 @@
+{
+  "stage": "4-2: conditional NLR Running/Waiting replay",
+  "protocol_status": "Declared before candidate scores were computed; exploratory, not preregistered",
+  "calibration": {
+    "rates": "odd integer request rates 1-99, paired datasets in same split",
+    "window_seconds_from_run_start": [60, 150],
+    "low_lifetime_anchors": "odd rates 11-29 passing low-drift screen in the calibration window only",
+    "high_rate_proxy": "odd rates >=60, Waiting positive at all calibration snapshots",
+    "concurrency_hypothesis": "maximum Running among calibration snapshots only",
+    "service_curve": "conditional departures vs mean Running; high-regime median anchor; monotone regularization and linear interpolation"
+  },
+  "comparison": {
+    "rates": "even integer request rates 2-100",
+    "window_seconds_from_run_start": [60, 240],
+    "initial_state": "first observed Running/Waiting in window; subsequent states not supplied",
+    "unobserved_initial_remaining_work": "uniform quantiles on (0,1), sensitivity using quantiles squared and square-root",
+    "input": "regular arrivals at configured rate, not observed request admission timestamps",
+    "exclude_initial_point_from_scores": true,
+    "not_an_independent_blind_test": true,
+    "reason": "All NLR rates have already been inspected during earlier research; this split prevents numeric calibration reuse, not prior-knowledge leakage"
+  },
+  "models": {
+    "B0_persistence": "hold initial observed stocks; nonmechanistic diagnostic reference",
+    "F1_short_lifetime": "FIFO slots with one fixed low-load lifetime; simplified PL43 scaffold, not full TTFT/TBT model",
+    "F2_capacity_lifetime": "same FIFO slots, lifetime=K/conditional high-load rate; diagnostic opposing calibration",
+    "S1_state_dependent_lps": "fixed-K state-dependent limited processor sharing; Gupta & Zhang 2022 Eq2-3; NLR empirical service curve and unit work are adaptations"
+  },
+  "job_work": {"primary_distribution": "deterministic normalized work = 1", "not_identified_from_NLR": true},
+  "integration": "event driven; arrivals and completions determine updates, output sampling does not set dynamics",
+  "primary_metrics": ["Running RMSE", "Waiting RMSE", "unfinished RMSE"],
+  "additional_metrics": ["MAE", "bias", "endpoint error", "growth slope error"],
+  "aggregation": "per-run metrics, then equal-run mean by service and request-rate band",
+  "rate_bands": {"low": [1,30], "transition": [31,59], "high": [60,100]},
+  "no_composite_J": true,
+  "power_or_facility_integration": false,
+  "R3_added": false,
+  "no_time_varying_traffic_validation_claim": true,
+  "references": [
+    {"id":"PL43", "url":"https://arxiv.org/html/2603.18383v1#S3.SS3", "scope":"lifetime/FIFO/active count scaffold; Eq6; not a full reproduction"},
+    {"id":"EXT-SDLPS2022", "url":"https://doi.org/10.1287/stsy.2021.0087", "scope":"Gupta and Zhang, Stochastic Systems 12(2),205-225; Sec2.1 Eq2-3; not their diffusion/control algorithm"},
+    {"id":"NLR", "scope":"local raw server scheduler snapshots and configured benchmark metadata"}
+  ]
+}

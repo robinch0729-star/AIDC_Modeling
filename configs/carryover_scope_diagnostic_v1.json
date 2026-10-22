@@ -1,0 +1,27 @@
+{
+  "stage": "4-3: diagnostic attribution and provisional applicability, not model refitting",
+  "status": "Exploratory follow-up after viewing phase 4-2; not an independent validation or preregistration",
+  "model": "Frozen S1 parameters and simulator from carryover_replay_v1",
+  "focus_rates": {"InstructCoder": [20, 36, 40, 42, 90], "mlperf-inference-llama2-data": [20, 40, 44, 46, 48, 90]},
+  "windows_relative_to_run_s": {"early": [60, 120], "middle": [120, 180], "late": [180, 240], "fit_span": [60, 150], "later_span": [150, 240]},
+  "initial_work_powers": [0.25, 0.5, 1, 2, 4],
+  "arrival_phases": [0.1, 0.5, 0.9],
+  "arrival_rate_factors": [0.95, 0.98, 1, 1.02, 1.05],
+  "arrival_factor_status": "Assumed sensitivity range, not measured admission uncertainty or a confidence interval",
+  "no_best_parameter_adopted": true,
+  "metrics": "Original RMSE/MAE plus same-calendar-window errors, late-window errors and observed/predicted first sampled Waiting; no weighted J",
+  "token_alignment": "At interval-ending snapshot, use logged tokens/s weighted by preceding snapshot interval; omit first snapshot of each window",
+  "departure_proxy": "configured arrival rate minus slope(Running+Waiting); not measured completions and not a confirmed capacity",
+  "facility_mapping": {
+    "input": "Previously constructed K=1000 offered request streams only",
+    "mean_rate_targets_rps_per_instance": [10, 20, 30, 40, 50, 60],
+    "instance_allocation": "For each service independently: ceil(mean facility offered rps / illustrative mean rate target)",
+    "within_service_distribution": "Equal fractional rate to all fixed instances, not explicit request routing",
+    "exposure_intervals": [1, 300],
+    "boundaries": "below 2; 2..30; >30..<60; 60..100; >100 req/s/instance",
+    "not_capacity_sizing": true,
+    "not_17MW_calibration": true
+  },
+  "prohibited_claims": ["causal root cause identified", "new independent test", "SLO safety established", "time-varying transition validated", "M3 input redefined", "5-minute energy accuracy validated"],
+  "power_model_or_existing_outputs_modified": false
+}

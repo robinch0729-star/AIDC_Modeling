@@ -1,0 +1,156 @@
+{
+  "version": "ess_tes_pcc_scheduling_v3_eta90",
+  "candidate_config": "configs/pcc_tes_operating_candidate_v1.json",
+  "step_s": 300,
+  "initial_soc": 0.5,
+  "terminal_soc": 0.5,
+  "cop": 5,
+  "objective": "energy",
+  "time_limit_s": 45,
+  "ess": {
+    "energy_capacity_mwh": 4,
+    "charge_limit_mw": 1,
+    "discharge_limit_mw": 1,
+    "charge_efficiency": 0.9,
+    "discharge_efficiency": 0.9,
+    "min_soc": 0.1,
+    "max_soc": 0.9,
+    "hourly_retention_fraction": 1
+  },
+  "strategies": [
+    {
+      "id": "tes_only",
+      "label_ko": "TES 단독",
+      "use_tes": true,
+      "use_ess": false
+    },
+    {
+      "id": "ess_only",
+      "label_ko": "ESS 단독",
+      "use_tes": false,
+      "use_ess": true
+    },
+    {
+      "id": "joint",
+      "label_ko": "ESS–TES 공동",
+      "use_tes": true,
+      "use_ess": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "constant_27",
+      "label_ko": "27.0 MW",
+      "type": "constant",
+      "cap_mw": 27
+    },
+    {
+      "id": "constant_26",
+      "label_ko": "26.0 MW",
+      "type": "constant",
+      "cap_mw": 26
+    },
+    {
+      "id": "constant_25_8",
+      "label_ko": "25.8 MW",
+      "type": "constant",
+      "cap_mw": 25.8
+    },
+    {
+      "id": "constant_25_5",
+      "label_ko": "25.5 MW",
+      "type": "constant",
+      "cap_mw": 25.5
+    },
+    {
+      "id": "constant_24_8",
+      "label_ko": "24.8 MW: 공동 출력 한계 시험",
+      "type": "constant",
+      "cap_mw": 24.8
+    },
+    {
+      "id": "time_varying",
+      "label_ko": "48–72 h: 26 MW, 그 외 27 MW",
+      "type": "time_window",
+      "outside_cap_mw": 27,
+      "inside_cap_mw": 26,
+      "start_h": 48,
+      "end_h": 72
+    },
+    {
+      "id": "energy_stress",
+      "label_ko": "5시간 연속 0.428 MW 감축",
+      "type": "energy_stress",
+      "outside_cap_mw": 27,
+      "thermal_discharge_required_mw_th": 2,
+      "start_h": 36,
+      "end_h": 41
+    }
+  ],
+  "parameter_provenance": [
+    {
+      "parameter": "ESS technology and duration",
+      "value": "generic lithium-ion; nominal E/P = 4 h",
+      "classification": "reference_informed_research_candidate",
+      "basis": "ATB2024 Commercial Battery Storage models 1–8 h durations and uses a four-hour system for its base-year cost illustration. Four hours is a reference-informed research candidate, not an identified optimum for this AIDC."
+    },
+    {
+      "parameter": "ESS output / capacity",
+      "value": "1 MW PCC-referred AC / 4 MWh internal stored energy",
+      "classification": "explicit_research_sizing_assumption",
+      "basis": "Preserve user-selected 1 MW PCC-referred AC power and 4 MWh internal energy from v2. No sizing change in v3. P_AC/E_internal=0.25 h^-1 is a nominal system ratio, not an electrochemical cell C-rate."
+    },
+    {
+      "parameter": "round-trip efficiency",
+      "value": "eta_charge=eta_discharge=0.9; round-trip efficiency=0.81",
+      "classification": "user_selected_rounded_research_assumption",
+      "basis": "User chose 90% for each effective PCC-referred charge and discharge efficiency. This gives 81% round-trip efficiency, NOT 90% or the previously adopted ATB 85%. Rounded research scenario, not a universal battery value. No additional UPS/inverter/transformer efficiency is applied to ESS flows."
+    },
+    {
+      "parameter": "SOC limits / endpoints",
+      "value": "10–90%; initial=terminal=50%",
+      "classification": "explicit_research_operating_assumption",
+      "basis": "SOC window is not claimed to be an ATB default or universal battery standard. PL6 Eq23/24 supports SOC accounting, mutually exclusive ports and cyclic endpoint structure, not these numerical values."
+    },
+    {
+      "parameter": "ESS standing loss and dedicated auxiliaries",
+      "value": "omitted (hourly retention=1)",
+      "classification": "reduced_order_scope_assumption",
+      "basis": "No separately calibrated auxiliary consumption, thermal management, self-discharge, degradation or backup reserve. They are not claimed physically zero. RTE aggregates conversion/cycling loss only; omitted time-dependent losses should be revisited for deployment."
+    },
+    {
+      "parameter": "TES parameters",
+      "value": "unchanged 10 MWhth / 3 MWth",
+      "classification": "preserved_previous_reference_candidate",
+      "basis": "Inherited candidate retains PL30/REopt provenance. Disabled TES means device absent, no standby charge. Comparisons across hardware portfolios are not equal-investment comparisons."
+    }
+  ],
+  "references": [
+    {
+      "id": "ATB2024",
+      "title": "2024 Annual Technology Baseline: Commercial Battery Storage",
+      "organization": "NREL (now NLR)",
+      "url": "https://atb.nrel.gov/electricity/2024/commercial_battery_storage",
+      "used": "Duration-range and four-hour scenario context only for v3. ATB representative 85% RTE described the previous v2 baseline; current 81% RTE is a user-selected assumption."
+    },
+    {
+      "id": "PL6",
+      "title": "Data center load modeling through optimal energy consumption characteristics: A path to simultaneously enhance energy efficiency and demand response quality",
+      "authors": "Yongcheng Zhou et al.",
+      "journal": "Applied Energy 393 (2025) 126095",
+      "url": "https://doi.org/10.1016/j.apenergy.2025.126095",
+      "local_text": "D:/DC_modeling/tmp/pdfs/it_equations/paper_06.txt",
+      "used": "PDF p9 Eq23, pp10–11 Eq24: stored energy, power bounds, exclusive ports, no export and initial/final state constraints. Original UPS backup capacity and 0.98/0.96 efficiency are not used."
+    }
+  ],
+  "scope": [
+    "Dedicated dispatch ESS is separate from existing UPS; no assumption that emergency backup capacity is available for demand management.",
+    "ESS electrical ports are referred to the PCC AC boundary, with effective end-to-end efficiencies. Battery and conversion losses are assumed outside the modeled server-room thermal boundary; existing IT cooling input remains frozen.",
+    "Both storage devices can charge or discharge independently, but neither device can charge and discharge simultaneously. No predetermined ESS-fast/TES-slow roles in a 5-minute model.",
+    "Hypothetical 5-minute mean PCC caps; perfect-foresight offline optimization, not DSO-derived DOE, tariff optimization, uncertain forecasting, rolling control, DFL or HIL.",
+    "ESS-only excludes TES and its standby losses. Joint/TES-only keep the identical TES; all enabled devices end at their starting SOC. Joint adds hardware, not an equal-budget comparison.",
+    "Four-hour E/P is a nominal ratio, not guaranteed four-hour AC discharge. SOC90–10 gives3.2MWh internal usable energy and2.88MWh AC delivery at eta_dis=.9, or2.88h at1MW. InitialSOC50% gives1.44h without precharge. Initial/terminal internalenergy2MWh.",
+    "Only ESS charge and discharge efficiencies change from sqrt(.85) to.9. Same1MW/4MWh, sameSOC endpoints, sameTES and caps. Compare with v2; lowering efficiency is not assumed to preserve feasibility or improve objective."
+  ],
+  "comparison_baseline": "outputs/ess_tes_pcc_scheduling_v2_4mwh/summary.json"
+}

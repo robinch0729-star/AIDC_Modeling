@@ -1,0 +1,80 @@
+{
+  "version": "pcc_cooling_tes_candidate_v1",
+  "status": "candidate_for_user_review_not_selected_or_facility_validated",
+  "it_input": "outputs/it_5min_operating_baseline_v1/baseline_1s.npz",
+  "it_seed_index": 0,
+  "internal_step_s": 10,
+  "report_step_s": 300,
+  "topology": "Air-cooled room + modulating aggregate water chiller + indirect fully mixed chilled-water TES; no free cooling, ESS, PV, CHP, liquid CDU, or converter switching",
+  "electrical": {
+    "ups_efficiency": 0.97,
+    "transformer_efficiency": 0.99,
+    "auxiliary_mw": 0.1,
+    "ups_heat_to_room_fraction": 1.0
+  },
+  "room": {
+    "initial_c": 24.0,
+    "setpoint_c": 24.0,
+    "min_c": 22.0,
+    "max_c": 27.0,
+    "effective_capacity_mwh_per_k": 1.0,
+    "ua_mw_per_k": 0.02,
+    "ambient_c": 30.0,
+    "tracking_time_s": 300.0,
+    "coil_capacity_mw_th": 30.0
+  },
+  "plant": {
+    "chiller_capacity_mw_th": 26.0,
+    "cop": 5.0,
+    "design_cooling_mw_th": 25.0,
+    "fan_base_mw": 0.15,
+    "fan_variable_mw": 0.55,
+    "water_pump_base_mw": 0.05,
+    "water_pump_variable_mw": 0.1,
+    "condenser_pump_mw_per_mw_heat": 0.005,
+    "tower_fan_mw_per_mw_heat": 0.015
+  },
+  "tes": {
+    "volume_m3": 3000.0,
+    "water_density_kg_m3": 1000.0,
+    "water_cp_j_kg_k": 4180.0,
+    "initial_c": 7.5,
+    "charge_target_c": 7.5,
+    "minimum_c": 7.0,
+    "maximum_discharge_supply_c": 10.0,
+    "reference_warm_c": 12.0,
+    "source_chilled_c": 6.0,
+    "load_return_c": 12.0,
+    "ambient_c": 25.0,
+    "ua_mw_per_k": 0.004,
+    "hx_effectiveness": 0.95,
+    "maximum_flow_kg_s": 500.0,
+    "maximum_charge_mw_th": 5.0,
+    "maximum_discharge_mw_th": 5.0,
+    "pump_head_m": 20.0,
+    "pump_efficiency": 0.75,
+    "minimum_reserve_mwh_th": 2.0
+  },
+  "dispatch": {
+    "charge_hours_elapsed_mod24": [2.0, 6.0],
+    "discharge_hours_elapsed_mod24": [16.0, 18.0],
+    "charge_command_mw_th": 3.0,
+    "discharge_command_mw_th": 3.0,
+    "terminal_recovery_hours": 4.0,
+    "is_optimal_or_dso_instruction": false
+  },
+  "assumptions": [
+    "IT is provisionally treated as downstream-of-UPS server AC input including internal server fans/PSUs; NLR measurement boundary is not fully verified.",
+    "No post-generation IT/PCC scaling and no PUE multiplier. A 20 MW average is a design reference, not a DOE import cap.",
+    "All IT, auxiliary and configured UPS losses enter one equivalent air-room heat state. This is not a validated liquid-cooled AIDC topology.",
+    "Weather and all equipment sizes/efficiencies except COP=5 (PL13 case value) are transparent illustrative assumptions, not measured site data.",
+    "COP=5 is retained from PL13 Table 1 only as a comparison setting; it is not a selected vendor performance map.",
+    "Aggregate chiller modulation is algebraic within capacity; compressor start/stop, minimum part-load and actuator dynamics are not modeled.",
+    "TES heat ports are measured at tank boundary (no duplicate round-trip efficiency); heat exchanger effectiveness limits flow/temperature capability.",
+    "TES pump heat and chilled-water pump heat enter the plant water load; condenser pump heat is rejected at the tower.",
+    "Fully mixed tank temperature is a conservative/simple topology hypothesis, not a model of a verified stratified storage tank.",
+    "Dispatch clock is elapsed simulation time modulo 24, not local peak tariff or a demand forecast. Terminal recovery is a comparison boundary condition.",
+    "Temperature limits are illustrative scenario constraints, not a grid code/ASHRAE certification or a chip hot-spot temperature guarantee.",
+    "Only active-power PCC operation is modeled. Reactive power, voltage dependence, protection and FRT are deferred."
+  ]
+}

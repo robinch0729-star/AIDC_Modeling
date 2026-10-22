@@ -1,0 +1,44 @@
+{
+  "version": "ieee33_operating_reference_v1",
+  "status": "user_confirmed_research_reference_not_physical_connection_design",
+  "decision_date": "2026-10-14",
+  "authorization": "User confirmed the allowance alternative as the reference network and the nominal minimum as a comparison scenario.",
+  "generation_config": "configs/ieee33_reinforcement_v1.json",
+  "selection_record": "outputs/ieee33_reinforcement_v1/selected_candidates.json",
+  "historical_screen_report": "outputs/ieee33_reinforcement_v1/report_ko.html",
+  "reference": {
+    "candidate_id": "cu400_n3_v1.040",
+    "historical_key": "allowance_alternative",
+    "label_ko": "기준 계통: 여유 보강안",
+    "equivalent_root_r_ohm": 0.021333333333333333,
+    "equivalent_root_x_ohm": 0.0396,
+    "equivalent_root_c_nf": 1170,
+    "root_current_limit_ka": 1.785
+  },
+  "comparison": {
+    "candidate_id": "cu630_n2_v1.040",
+    "historical_key": "nominal_minimum",
+    "label_ko": "비교 계통: 최소 보강안",
+    "equivalent_root_r_ohm": 0.0215,
+    "equivalent_root_x_ohm": 0.0558,
+    "equivalent_root_c_nf": 980,
+    "root_current_limit_ka": 1.524
+  },
+  "fixed": {
+    "nominal_voltage_kv": 12.66,
+    "frequency_hz": 60,
+    "connection_bus_1based": 2,
+    "source_voltage_pu": 1.04,
+    "voltage_bounds_pu": [0.95, 1.05],
+    "head_limit_mva": 40.0,
+    "other_branch_limit_ka": 0.6,
+    "facility_lagging_pf": 0.98,
+    "ess_q_mvar": 0.0,
+    "nominal_background_p_mw": 3.715,
+    "nominal_background_q_mvar": 2.3
+  },
+  "rating_interpretation": "Use nominal equivalent parameters in the reference. Current factor0.9 and resistance factor1.1 remain sensitivity cases, not silently applied nominal changes.",
+  "unchanged": ["AIDC profile magnitude", "ESS/TES specifications and existing schedules", "33-bus topology", "all non-root series impedances"],
+  "selection_reason": "Passes the existing load and charging-envelope checks plus the declared -10% current/+10% resistance stress; separates an operational reference from a minimum-within-finite-candidates comparison. Voltage robustness, N-1 and least-cost design are not established.",
+  "limitations": ["Time-varying background can invalidate static feasibility", "No automatic tap adjustment or reinforcement after results", "No physical installation approval, N-1, grid-code certification, DOE or network-aware dispatch implied"]
+}

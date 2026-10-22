@@ -1,0 +1,81 @@
+{
+  "version": "modified_ieee33_candidate_v1",
+  "status": "research_candidate_pending_user_review_not_validated_connection_design",
+  "family": "Study-specific modified IEEE 33-bus based on Baran-Wu",
+  "prior_plan": {
+    "family_previously_selected": true,
+    "numeric_modifications_previously_selected": false,
+    "records": ["../outputs/novelty_enhanced_research_plan.md:45-51", "../outputs/novelty_enhanced_research_plan.md:619-623", "notion_progress_after_current.md:825"],
+    "simbench_status": "Alternative exploratory work only; not the main research testbed. Prior outputs are retained, not erased."
+  },
+  "network": {
+    "constructor": "pandapower.networks.case33bw",
+    "pandapower_version": "3.5.6",
+    "original_voltage_kv": 12.66,
+    "candidate_voltage_kv": 33.0,
+    "calculation_base_mva": 10.0,
+    "slack_voltage_pu": 1.0,
+    "background_load_scale": 1.0,
+    "preserve_original_topology": true,
+    "preserve_branch_series_r_x_ohm": true,
+    "closed_branches": 32,
+    "open_ties": 5,
+    "uniform_branch_limit_ka": 0.6,
+    "feeder_head_apparent_power_limit_mva": 40.0,
+    "voltage_min_pu": 0.95,
+    "voltage_max_pu": 1.05,
+    "explicit_upstream_transformer": false,
+    "distributed_generation": false,
+    "reactive_compensation": false,
+    "automatic_voltage_regulation": false,
+    "original_generator_limits_used_as_equipment_ratings": false,
+    "provenance": {
+      "topology_and_series_impedance_and_background_load": "MATPOWER case33bw / Baran-Wu (1989), accessed through pinned pandapower conversion. Unit-length branch representation is not a physical 1 km line survey.",
+      "voltage_bounds": "0.95-1.05 pu from Dolatabadi et al. enhanced33 study convention; not a universal grid-code compliance assertion.",
+      "candidate_voltage": "Research choice. 33 kV is used in distribution networks (NGED NDP); this is neither a published 33kV IEEE33 version nor a German/ACS network.",
+      "thermal_and_supply_limits": "Explicit synthetic research assumptions, NOT IEEE33 source ratings, cable ampacity design, or a transformer specification. Sensitivity checks are mandatory.",
+      "electrical_modification": "Keep physical R/X ohms, change actual nominal voltage to33kV. This reduces per-unit impedance and voltage drop; it is a changed synthetic network, not mere normalization or a proven upgrade design."
+    }
+  },
+  "aidc": {
+    "profile": "outputs/ess_tes_pcc_scheduling_v3_eta90/schedules_5min.npz",
+    "summary": "outputs/ess_tes_pcc_scheduling_v3_eta90/summary.json",
+    "profile_key": "no_storage_pcc_mw",
+    "profile_rescaled": false,
+    "base_case_connection_bus_1based": 2,
+    "base_bus_reason": "Near-feeder-head connection chosen as a transparent initial case; not selected by storage benefit or by tuning network limits.",
+    "comparison_buses_1based": [6, 18],
+    "screen_all_non_slack_buses": true,
+    "connection_boundary": "Direct equivalent load at existing bus; that bus is the PCC. No added dedicated connection line or site transformer. Their extra external impedance is not assessed.",
+    "model": "Balanced three-phase constant PQ, quasi-steady-state AC power flow",
+    "facility_lagging_power_factor": 0.98,
+    "ess_q_mvar": 0.0,
+    "loss_boundary": "Frozen facility PCC P already includes facility UPS/site-transformer losses. Network branch losses are added only upstream. No double counting.",
+    "q_rule_future_storage": "Q_PCC=P_facility_after_TES*tan(acos(pf))+Q_ESS; do not recompute Q from net P after ESS when Q_ESS=0."
+  },
+  "screening": {
+    "background_scales": [0.5, 1.0, 1.5],
+    "facility_power_factors": [0.95, 0.98, 1.0],
+    "branch_limits_ka": [0.45, 0.6, 0.75],
+    "head_limits_mva": [30.0, 40.0, 50.0],
+    "static_p_search_upper_mw": 50.0,
+    "static_p_tolerance_mw": 0.002,
+    "time_series_scope": "Existing 1438 five-minute baseline PCC samples at bus2 with constant nominal background. No synchronized real background trace and no storage reoptimization.",
+    "parameter_tuning_after_results": false
+  },
+  "not_claimed": [
+    "One universal modified IEEE33 standard or full reproduction of the enhanced33 paper",
+    "Physical 33kV cable/transformer installation design, protection or short-circuit validation",
+    "Dynamic grid-code, frequency, harmonics, FRT, HIL or N-1 compliance",
+    "Network-derived multi-period DOE or DSO-AIDC coordination optimization",
+    "ESS-TES benefit, feasibility of previous exogenous25.5MW schedule, or robust guarantee under uncertainty",
+    "Final user approval of candidate numeric assumptions"
+  ],
+  "references": [
+    {"id":"R1","title":"Network reconfiguration in distribution systems for loss reduction and load balancing","authors":"M. E. Baran and F. F. Wu","publication":"IEEE Transactions on Power Delivery,4(2),1401-1407,1989","url":"https://doi.org/10.1109/61.25627","data_url":"https://github.com/MATPOWER/matpower/blob/master/data/case33bw.m","use":"Original topology,loads,R/X; branch rates0 are unspecified, not zero capacity."},
+    {"id":"R2","title":"An Enhanced IEEE 33 Bus Benchmark Test System for Distribution System Studies","authors":"S. H. Dolatabadi et al.","publication":"IEEE Transactions on Power Systems,36(3),2565-2572,2021","url":"https://doi.org/10.1109/TPWRS.2020.3038030","data_url":"https://github.com/PowerSystemsTestBenchmarks/IEEE33Bus","use":"Enhanced benchmark context and0.95-1.05pu convention only. Its DG,RPC,source limits and modified tie list are not adopted."},
+    {"id":"R3","title":"Hosting Capacity Assessment and Enhancement for Edge Data Centers in Active Distribution Networks","authors":"Fang and Li","publication":"arXiv:2606.01407 (2026), paper list[20]","url":"https://arxiv.org/abs/2606.01407","use":"IEEE33 location-dependent data-center feasibility and voltage/current checks. Not a source of our33kV/600A/40MVA numerical assumptions."},
+    {"id":"R4","title":"Network Development Plan, May2024, Table8","authors":"National Grid Electricity Distribution","url":"https://www.nationalgrid.co.uk/downloads-view-reciteme/662691","use":"33kV is an established distribution-network voltage in NGED context; does not validate this synthetic network or German connection conditions."},
+    {"id":"R5","title":"pandapower Case33bw documentation","url":"https://pandapower.readthedocs.io/en/v3.5.1/networks/power_system_test_cases.html","use":"Official constructor provenance; execution uses pinned3.5.6 and stores raw-data hash."}
+  ]
+}

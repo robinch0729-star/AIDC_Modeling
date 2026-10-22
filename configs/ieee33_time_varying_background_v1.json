@@ -1,0 +1,42 @@
+{
+  "version": "ieee33_time_varying_background_v1",
+  "status": "declared_profile_assumptions_for_first_time_series_assessment",
+  "network_reference": "configs/ieee33_operating_reference_v1.json",
+  "source": {
+    "library": "simbench",
+    "version": "1.6.3",
+    "profile_donor_code": "1-MV-urban--0-sw",
+    "dataset_folder": "networks/1-complete_data-mixed-all-0-sw",
+    "profile_table": "LoadProfile.csv",
+    "source_start_naive": "2016-05-08 00:00:00",
+    "source_days": 5,
+    "native_step_s": 900,
+    "selection_reason": "Urban MV benchmark load mix as an initial mixed-background proxy. Second Sunday of May2016 through the following Thursday, selected before power-flow results, matching the second-Sunday-of-May2024 start and Sun-Thu structure of the existing Azure window. Not the same year, place, timezone or measured correlation.",
+    "aggregation": "Sum of donor active-load ratings times their assigned relative active-load profiles; in-service loads and original scaling only. Donor network, voltage, generators and reactive profiles are NOT transferred.",
+    "license": "SimBench database ODbL; individual contents DbCL; retain attribution on derived profile exports."
+  },
+  "alignment": {
+    "aidc_start_utc": "2024-05-12T00:05:00+00:00",
+    "source_offset_s": 300,
+    "target_step_s": 300,
+    "expected_intervals": 1438,
+    "mapping": "Hold each 15-minute value over three 5-minute intervals; trim the first and last5-minute intervals of the5-day block. Source timestamps are naive scenario labels, not converted to UTC.",
+    "phase_sensitivity": "Circularly shift the retained1438-value background vector by72steps (6h), preserving its exact energy/distribution. This is a synthetic phase test; wrap seam and weekday alignment are not physical."
+  },
+  "spatial_mapping": "One common nonnegative multiplier applies to every original IEEE33 P and Q load, preserving each bus power factor and the original spatial P/Q shares. The additional AIDC load is explicitly excluded. No claim of measured nodal diversity.",
+  "scenarios": [
+    {"id": "mean_preserved", "label_ko": "기간 평균 유지", "normalization": "mean", "shift_steps": 0, "role": "primary_assessment_not_final_load_calibration"},
+    {"id": "peak_preserved", "label_ko": "기간 최대 유지", "normalization": "max", "shift_steps": 0, "role": "normalization_sensitivity"},
+    {"id": "mean_shift_6h", "label_ko": "평균 유지 + 6시간 이동", "normalization": "mean", "shift_steps": 72, "role": "relative_timing_sensitivity"}
+  ],
+  "replay_modes": ["no_storage", "existing_joint", "aidc_off_diagnostic"],
+  "extra_diagnostic": "At every no-storage violating point, try maximum instantaneous ESS/TES discharge ignoring SOC and duration. If it still fails, rated active-only storage cannot remove that violation on this tested operating branch; if it passes, no feasible multiperiod schedule is implied.",
+  "solver": "Balanced quasi-steady AC BFSW; independent Newton-Raphson checks at voltage/current/head extrema and failure points. No high-frequency waveform reconstruction.",
+  "references": [
+    {"id": "SB_DATA", "title": "SimBench datasets and separate use of time series", "url": "https://simbench.de/en/download/datasets/"},
+    {"id": "SB_PROFILES", "title": "Official SimBench relative-to-absolute profile interface", "url": "https://simbench.readthedocs.io/en/stable/profiles.html"},
+    {"id": "SB_TIME", "title": "SimBench: Open source time series of power load, storage and generation for the simulation of electrical distribution grids", "url": "https://simbench.de/wp-content/uploads/2025/11/time_series_preprint.pdf", "use": "One-year2016 profile construction and15-minute resolution; not validation of this IEEE33 mapping."},
+    {"id": "SB_LICENSE", "title": "SimBench download and licenses", "url": "https://simbench.de/en/download/"}
+  ],
+  "not_claimed": ["Korean, German or ACS site-specific feeder", "Measured simultaneous Azure/background chronology", "New measured5-minute variability", "Nodal stochastic diversity", "Network-aware rescheduling or DOE", "New sizing, source-voltage tuning or reinforcement to force a pass"]
+}

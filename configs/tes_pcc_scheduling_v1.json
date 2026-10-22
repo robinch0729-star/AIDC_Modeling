@@ -1,0 +1,27 @@
+{
+  "version": "tes_pcc_scheduling_v1",
+  "status": "deterministic_offline_TES_dispatch_with_illustrative_PCC_caps",
+  "candidate_config": "configs/pcc_tes_operating_candidate_v1.json",
+  "step_s": 300,
+  "initial_soc": 0.5,
+  "terminal_soc": 0.5,
+  "cop": 5.0,
+  "objective": "energy",
+  "time_limit_s": 45,
+  "scenarios": [
+    {"id": "constant_27", "label_ko": "고정 27.0 MW", "type": "constant", "cap_mw": 27.0},
+    {"id": "constant_26_2", "label_ko": "고정 26.2 MW", "type": "constant", "cap_mw": 26.2},
+    {"id": "constant_26", "label_ko": "고정 26.0 MW", "type": "constant", "cap_mw": 26.0},
+    {"id": "constant_25_8", "label_ko": "고정 25.8 MW: 출력 한계 시험", "type": "constant", "cap_mw": 25.8},
+    {"id": "time_varying", "label_ko": "48–72 h: 26.0 MW, 나머지 27.0 MW", "type": "time_window", "outside_cap_mw": 27.0, "inside_cap_mw": 26.0, "start_h": 48.0, "end_h": 72.0},
+    {"id": "energy_stress", "label_ko": "5시간 연속 방전 요구: 에너지 한계 시험", "type": "energy_stress", "outside_cap_mw": 27.0, "thermal_discharge_required_mw_th": 2.0, "start_h": 36.0, "end_h": 41.0}
+  ],
+  "scope": [
+    "PCC caps are explicit hypothetical test inputs, not network-derived DOE or grid-code limits.",
+    "The cap applies to each 5-minute average PCC active-power value, not every instantaneous measurement.",
+    "Use the full known approximately 5-day profile as perfect-foresight offline input, not a deployable forecast or rolling controller.",
+    "Minimize total imported electrical energy under a hard cap, storage and plant constraints and equal initial/final SOC. No price or economic cost model.",
+    "TES only. No ESS dispatch, IT workload change, DSO power flow, uncertainty, DFL or temperature-dynamic validation.",
+    "Energy stress cap follows the frozen baseline minus a specified discharge equivalent for an intentionally infeasible diagnostic; not an independent realistic DSO signal."
+  ]
+}

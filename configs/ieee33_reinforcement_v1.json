@@ -1,0 +1,67 @@
+{
+  "version": "ieee33_reinforcement_v1",
+  "status": "reference_informed_research_candidate_not_connection_design",
+  "inherits": "configs/ieee33_1266kv_screen_v1.json",
+  "fixed": {
+    "nominal_voltage_kv": 12.66,
+    "frequency_hz": 60,
+    "connection_bus_1based": 2,
+    "voltage_bounds_pu": [0.95, 1.05],
+    "background_scale": 1.0,
+    "facility_lagging_pf": 0.98,
+    "ess_q_mvar": 0.0,
+    "head_limit_mva": 40.0,
+    "other_branch_limit_ka": 0.6,
+    "profile_rescaled": false,
+    "storage_resized": false
+  },
+  "search": {
+    "changed_corridor": [1, 2],
+    "assumed_route_length_km": 1.0,
+    "parallel_circuit_candidates": [1, 2, 3, 4],
+    "source_voltage_candidates_pu": [1.0, 1.005, 1.01, 1.015, 1.02, 1.025, 1.03, 1.035, 1.04, 1.045, 1.05],
+    "ranking": ["number_of_replaced_corridors", "parallel_circuits", "conductor_area_mm2_per_phase_per_circuit", "source_voltage_pu"],
+    "ranking_note": "Lexicographic minimum within this finite candidate set, prioritizing fewer circuits then smaller cross-section then lower fixed source setpoint. NOT global least-cost planning, material minimum, or proof against all other reinforcement types.",
+    "include_source_adjustment_only_control": true,
+    "nominal_current_factor": 1.0,
+    "alternative_current_factor": 0.9,
+    "alternative_resistance_factor": 1.1,
+    "alternative_note": "Predeclared engineering sensitivity, not a manufacturer grouping factor or statistical confidence bound. Same candidate family; reported separately from nominal minimum."
+  },
+  "cables": [
+    {"area_mm2": 300, "r_ohm_per_km": 0.08, "x_ohm_per_km_at_50hz": 0.1, "c_nf_per_km": 350, "buried_trefoil_current_ka": 0.528, "reference": "C300"},
+    {"area_mm2": 400, "r_ohm_per_km": 0.064, "x_ohm_per_km_at_50hz": 0.099, "c_nf_per_km": 390, "buried_trefoil_current_ka": 0.595, "reference": "C400"},
+    {"area_mm2": 500, "r_ohm_per_km": 0.052, "x_ohm_per_km_at_50hz": 0.096, "c_nf_per_km": 430, "buried_trefoil_current_ka": 0.674, "reference": "C500"},
+    {"area_mm2": 630, "r_ohm_per_km": 0.043, "x_ohm_per_km_at_50hz": 0.093, "c_nf_per_km": 490, "buried_trefoil_current_ka": 0.762, "reference": "C630"}
+  ],
+  "parameter_provenance": [
+    {"parameter": "unchanged network", "basis": "Baran-Wu/MATPOWER case33bw topology, physical series R/X and background P/Q, via installed pandapower3.5.6. All corridors except1-2 are preserved."},
+    {"parameter": "source voltage", "basis": "Enhanced33 literature supports voltage control within0.95-1.05pu. Search1.00-1.05 in0.005pu increments is our finite research choice, not a reproduced OLTC tap specification. Fixed selected secondary-bus voltage; no explicit transformer, tap controller, delay or wear."},
+    {"parameter": "cable electrical data", "basis": "Current Nexans/La Triveneta Cavi product web pages: RG16H1M20, Cu,12/20(24)kV, AC resistance at90C, trefoil X at50Hz, capacitance, buried20C trefoil continuous current. Each parallel circuit means3 single-core phase cables, not one single-phase wire."},
+    {"parameter": "frequency adaptation", "basis": "Retain60Hz of the packaged case. X60=X50*60/50 assuming constant inductance; use catalog capacitance at60Hz in pi model. R90C is held as an approximate equivalent; sensitivity+10%. Catalog ampacity is a benchmark proxy, NOT certified60Hz ampacity; sensitivity-10%/-20% does not replace engineering calculation."},
+    {"parameter": "catalog discrepancy", "basis": "Older2021 manufacturer PDF gives larger ampacities for the same labels than current product pages. Use the explicitly linked current web-page values consistently; do not mix old ampacity with new entries. This unresolved version/installation difference is another reason these are research equivalent parameters, not procurement specifications."},
+    {"parameter": "route length and parallel circuits", "basis": "1km is an explicit hypothetical route, not inferred from pandapower's unit-length representation. Sensitivity0.5/1/2/3km. Equal circuits with symmetric current sharing; no inter-circuit thermal/magnetic coupling model. R_eq=R*L/n, X_eq=X*L/n, C_eq=C*L*n; I_limit=n*I_catalog*factor."},
+    {"parameter": "unchanged supply and other current limits", "basis": "40MVA head planning limit and600A other-line planning limits retained from earlier screen, not IEEE source equipment ratings. Sensitivity30/35/40MVA and300/450/600/750A. No transformer losses added because a new transformer is not modeled and facility transformer losses are already in PCC load."},
+    {"parameter": "selection operating points", "basis": "AIDC min/mean/peak at full original background; peak plus simultaneous rated ESS/TES charge as an instantaneous electrical envelope; min minus rated discharge; AIDCoff at background1/0.5/0.1/0. Not a guaranteed continuous maximum-charge schedule."}
+  ],
+  "sensitivity": {
+    "background_scales": [0.0, 0.5, 1.0, 1.1, 1.2, 1.5],
+    "facility_power_factors": [0.95, 0.98, 1.0],
+    "route_lengths_km": [0.5, 1.0, 2.0, 3.0],
+    "current_factors": [0.8, 0.9, 1.0],
+    "resistance_factors": [1.0, 1.1],
+    "other_branch_limits_ka": [0.3, 0.45, 0.6, 0.75],
+    "head_limits_mva": [30.0, 35.0, 40.0],
+    "source_voltage_offsets_pu": [-0.005, 0.0, 0.005]
+  },
+  "references": [
+    {"id":"BW","title":"MATPOWER case33bw / Baran and Wu1989","url":"https://github.com/MATPOWER/matpower/blob/master/data/case33bw.m","use":"Original topology, loads and series R/X; missing branch ratings are not physical zero capacity."},
+    {"id":"ENH33","title":"An Enhanced IEEE33 Bus Benchmark Test System for Distribution System Studies","authors":"S.H.Dolatabadi et al.","publication":"IEEE Transactions on Power Systems36(3),2565-2572,2021","url":"https://doi.org/10.1109/TPWRS.2020.3038030","use":"Voltage constraints and source-voltage-control precedent, not full benchmark replication."},
+    {"id":"COPLAN","title":"Collaborative Planning of Distribution Network, Data Centres and Renewable Energy in the Power Distribution IoT via Interval Optimization","authors":"L.Su et al.","publication":"Energies17(15),3623,2024","url":"https://www.mdpi.com/1996-1073/17/15/3623","use":"Eq23 includes line-type selection and transformer expansion. We use a fixed operational candidate, not their investment optimization."},
+    {"id":"C300","title":"Nexans RG16H1M20 12/20kV 1x300, ref585047106B2-500","url":"https://latrivenetacavi.nexans.com/en/products/special-projects/special-nocpr/RG16H1M20-38703/product~585047106B2-500~.html","access_date":"2026-10-14"},
+    {"id":"C400","title":"Nexans RG16H1M20 12/20kV 1x400, ref585049106B2-500","url":"https://latrivenetacavi.nexans.com/en/products/special-projects/special-nocpr/RG16H1M20-38703/product~585049106B2-500~.html","access_date":"2026-10-14"},
+    {"id":"C500","title":"Nexans RG16H1M20 12/20kV 1x500, ref585051106B2-500","url":"https://latrivenetacavi.nexans.com/it/products/special-projects/special-nocpr/RG16H1M20-38703/product~585051106B2-500~.html","access_date":"2026-10-14"},
+    {"id":"C630","title":"Nexans RG16H1M20 12/20kV 1x630, ref585052106B1-300","url":"https://latrivenetacavi.nexans.com/en/products/special-projects/special-nocpr/RG16H1M20-38703/product~585052106B1-300~.html","access_date":"2026-10-14"}
+  ],
+  "not_claimed": ["Actual cable installation/ampacity/protection/short-circuit/N-1 approval", "Global minimum cost or complete grid-code compliance", "New network-aware storage dispatch, DOE, DFL or HIL", "Real site route length or real correlated background load", "High-frequency voltage/ramp behavior from five-minute averages", "Nominal passing case is robust to all tested stresses"]
+}

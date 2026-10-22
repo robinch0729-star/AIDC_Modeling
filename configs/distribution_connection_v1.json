@@ -1,0 +1,96 @@
+{
+  "version": "distribution_connection_v1",
+  "status": "alternative_exploratory_case_not_the_main_research_testbed",
+  "selection_correction": "The existing research plan specifies Modified IEEE33. SimBench is retained only as an alternative screen. See configs/modified_ieee33_candidate_v1.json.",
+  "benchmark": {
+    "family": "SimBench",
+    "code": "1-MV-comm--0-sw",
+    "dataset_scenario": 0,
+    "simbench_package": "1.6.3",
+    "pandapower_package": "3.5.6",
+    "frequency_hz": 50,
+    "mv_nominal_kv": 20,
+    "hv_nominal_kv": 110,
+    "original_transformer_ratings_mva": [40, 40],
+    "original_topology_and_ratings_preserved": true,
+    "normal_topology": "Native closed HV and MV bus couplers; both transformers in service. MV feeder open points preserved.",
+    "upstream_grid": "Native external-grid voltage boundary, not a simulated 110 kV network."
+  },
+  "connection": {
+    "upstream_bus_index": 2,
+    "upstream_bus_name": "MV4.101 busbar1.1",
+    "pcc_bus_name": "AIDC PCC (study assumption)",
+    "line_type": "NA2XS2Y 1x185 RM/25 12/20 kV",
+    "length_km": 1.0,
+    "parallel_three_phase_circuits": 3,
+    "derating_factor": 1.0,
+    "max_current_per_circuit_ka": 0.362,
+    "r_ohm_per_km": 0.161,
+    "x_ohm_per_km": 0.117,
+    "c_nf_per_km": 273.00006543495897,
+    "provenance": "Cable type/parameters from SimBench. New branch, 1 km length and three circuits are research assumptions, not a benchmark-original or installation-rated design.",
+    "n_minus_one_claimed": false,
+    "site_transformer_added_to_network": false
+  },
+  "aidc_interface": {
+    "source_summary": "outputs/ess_tes_pcc_scheduling_v3_eta90/summary.json",
+    "pcc_mean_no_storage_mw": 22.892718337018046,
+    "pcc_peak_5min_no_storage_mw": 26.55320654556058,
+    "profile_rescaling": false,
+    "load_model": "Balanced three-phase constant PQ in quasi-steady-state AC power flow",
+    "facility_lagging_power_factor": 0.98,
+    "power_factor_sensitivities": [0.95, 1.0],
+    "power_factor_provenance": "Explicit aggregate research assumption; not measured NLR PF or a claimed connection-code requirement.",
+    "ess_q_mvar": 0.0,
+    "q_rule": "Q_PCC = P_facility_after_TES * tan(acos(pf_facility)) + Q_ESS; calculate before ESS active power terms.",
+    "p_rule": "P_PCC = P_facility_after_TES + P_ESS_charge - P_ESS_discharge; import positive, export disabled.",
+    "loss_boundary": "Existing facility model already includes site-transformer/UPS losses. ESS is PCC-referred with effective efficiencies. Do not reapply these losses. DSO 110/20 kV transformers and new external feeder losses are separate upstream quantities."
+  },
+  "voltage_and_thermal_criteria": {
+    "voltage_source": "Native SimBench per-bus limits",
+    "mv_min_pu": 0.965,
+    "mv_max_pu": 1.055,
+    "line_max_loading_percent": 100.0,
+    "trafo_max_loading_percent": 100.0,
+    "grid_code_compliance_claimed": false
+  },
+  "tap_operating_assumption": {
+    "mode": "Fixed synchronized bank tap selected from a declared nominal point; not dynamic OLTC",
+    "calibration_background": "native",
+    "calibration_aidc_demand": "mean_no_storage",
+    "target_mv_bus_pu": 1.025,
+    "candidate_taps": [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "selection_rule": "Minimize absolute difference of main MV bus voltage from native autoTapSetp=1.025 among converged AC solutions; same tap on both parallel transformers. Do not select using ESS benefit or cap feasibility.",
+    "selected_tap_result": "outputs/grid_connection_screen_v1/selection.json",
+    "selected_synchronized_tap": -2,
+    "tap_changer_type": "Ratio",
+    "compatibility_note": "Imported SimBench tap_changer_type=None and empty controller do not enact source autoTap metadata in this package combination. Ratio explicitly interprets native voltage-ratio taps; ratings, step size and range unchanged.",
+    "original_neutral_case_retained": true,
+    "hold_same_tap_across_storage_strategies": true,
+    "limits": "Fixed nominal tap need not satisfy all high-generation/low-load states. Online tap regulation, deadband, delay and switching counts remain separate follow-up."
+  },
+  "time_axis": {
+    "aidc_interval_s": 300,
+    "simbench_native_profile_interval_s": 900,
+    "future_alignment_rule": "Repeat each 15-minute average into three 5-minute intervals, conserving energy; this does not create measured 5-minute variability.",
+    "calendar_alignment_selected": false,
+    "this_step": "Static reference/stress snapshots only; no Azure-SimBench synchronized chronology or full 5-day network validation."
+  },
+  "excluded": [
+    "DSO OPF/DOE calculation and network-coupled ESS-TES optimization",
+    "N-1 security, cable installation design or thermal mutual derating certification",
+    "Protection, short-circuit, harmonics, power quality, FRT and dynamic grid-code compliance",
+    "Reactive flexibility or inverter apparent-power optimization",
+    "DFL, uncertain forecasts, rolling control and HIL"
+  ],
+  "references": [
+    {"id": "SIMBENCH_PAPER", "title": "SimBench—A Benchmark Dataset of Electric Power Systems to Compare Innovative Solutions Based on Power Flow Analysis", "authors": "S. Meinecke et al.", "publication": "Energies 13(12), 3290 (2020)", "url": "https://doi.org/10.3390/en13123290", "used": "Final Table 1: commercial20kV2x40MVA; benchmark topology/profiles; not original first-iteration table."},
+    {"id": "SIMBENCH_DATA", "url": "https://simbench.de/en/download/datasets/", "used": "Reproducible benchmark and component/time-series data. ODbL database / DbCL contents; research AIDC extension is not an original SimBench network."},
+    {"id": "SIMBENCH_LINE_TYPES", "url": "https://github.com/e2nIEE/simbench/blob/master/simbench/networks/1-complete_data-mixed-all-0-sw/LineType.csv", "used": "Original 20kV185mm2 cable electrical parameters and362A library rating; local package versions/table hashes pin execution."},
+    {"id": "SIMBENCH_PROFILES", "url": "https://simbench.readthedocs.io/en/stable/profiles.html", "used": "Official load/generation study cases and separate annual time-series interface."},
+    {"id": "MATPOWER_33BW", "url": "https://github.com/MATPOWER/matpower/blob/master/data/case33bw.m", "used": "Comparison:12.66kV3.715MW and no nonzero branch thermal ratings; not adopted for this27MW facility."},
+    {"id": "CIGRE_MV", "url": "https://github.com/e2nIEE/pandapower/blob/develop/pandapower/networks/cigre_networks.py", "used": "Comparison:original20kV25MVA transformers and small feeder current ratings; no direct adoption."},
+    {"id": "PL22", "title": "A Bilevel Framework for Data Center-Grid Coordination with DLMPs in Unbalanced Three-Phase Distribution Systems", "authors": "A. Baharvandi and D. T. Nguyen", "publication": "arXiv:2606.26328v1 (2026)", "url": "https://arxiv.org/abs/2606.26328", "used": "Constant-PF Q=P*tan(acos(PF)) modeling precedent. Original case uses0.95; our0.98 is a declared assumption, not copied measurement."},
+    {"id": "VDE_CONTEXT", "url": "https://www.vde.com/en/fnn/topics/technical-connection-rules/tcr-for-medium-voltage", "used": "Connection-requirement scope context only. No numeric limits borrowed, latest applicable edition or site compliance not certified here."}
+  ]
+}

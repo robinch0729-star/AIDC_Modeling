@@ -1,5 +1,6 @@
 # Python virtual environments
 .venv/
+.venv-grid/
 venv/
 env/
 
@@ -53,7 +54,7 @@ NLR_dataset/
 
 # Generated outputs and trained models
 outputs/
-models/
+/models/
 checkpoints/
 *.pkl
 *.joblib
@@ -65,4 +66,3 @@ checkpoints/
 papers/
 references/
 *.pdf
-

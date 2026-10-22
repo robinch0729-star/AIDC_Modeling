@@ -1,0 +1,15 @@
+{
+  "stage": "2: facility-scale offered-arrival construction, no power or queue model",
+  "comparison_multipliers": [100, 1000, 3000],
+  "primary_multiplier_for_figures": 1000,
+  "seeds": [20261005, 20261006, 20261007],
+  "analysis_bin_seconds": [1, 10, 60, 300],
+  "conditional_parent_seconds": [60, 300],
+  "mix_policy": "Keep both services' observed counts on the same UTC window; 39:61 is rounded, not imposed per block",
+  "scale_policy": "Apply the SAME integer multiplier to both services; preserve time and five-minute counts",
+  "multiplier_meaning": "Illustrative source-demand amplification, not an instance count, target facility size or capacity estimate",
+  "instance_count": null,
+  "service_capacity_rps": null,
+  "power_calibration": null,
+  "recommended_handoff": "Retain all three timing assumptions until NLR capacity and carryover sensitivity are diagnosed"
+}

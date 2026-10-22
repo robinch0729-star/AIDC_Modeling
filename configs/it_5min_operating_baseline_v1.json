@@ -1,0 +1,31 @@
+{
+  "version": "it_5min_operating_baseline_v1",
+  "purpose": "Provisional five-minute IT evaluation environment; not a validated facility digital twin",
+  "design_pcc_mean_mw": 20.0,
+  "design_pue": 1.15,
+  "design_parent_seconds": 60,
+  "design_peak_parent_rate_per_instance": 30.0,
+  "design_peak_is_slo_capacity": false,
+  "request_multiplier_search_max": 10000,
+  "arrival_method": "conditional_60s",
+  "arrival_seed": 20261006,
+  "residual_seeds": [20261006, 20261007, 20261008],
+  "residual_native_interval_s": 0.1,
+  "residual_burn_in_s": 120,
+  "output_interval_s": 300,
+  "allocation": "Fixed integer N per service from its observed one-minute peak; equal offered intensity within service",
+  "power_scaling_after_generation": false,
+  "low_rate_policy": "Keep offered arrivals unchanged. Below 1 rps use explicit M3 mathematical extension and R3 coefficients at 1 rps; flag and bound the steady-power extension.",
+  "carryover_comparison": {
+    "source": "frozen carryover_replay_v1 fitted_parameters; no refit",
+    "azure_window_seconds": 3600,
+    "warmup_seconds": 600,
+    "internal_observation_seconds": 0.1,
+    "stress_plateaus": [[20, 600], [70, 300], [10, 900]],
+    "bridge": "M3 at steady-equivalent offered rate mu_hat(R), normalized mean work=1; hypothetical state-to-power link, not measured completion rate",
+    "controls": ["original offered-rate M3", "memoryless bridge M3(min(rate, mu_max))", "stateful bridge M3(mu_hat(R))"],
+    "residual_policy": "Omit R3 in paired bridge comparison to isolate structural effects; it is retained in the long baseline",
+    "is_validation": false,
+    "acceptance_tolerance": null
+  }
+}
